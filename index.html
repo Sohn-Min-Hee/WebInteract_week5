@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>월리를 찾아라</title>
+    <link href="https://webfontworld.github.io/pretendard/Pretendard.css" rel="stylesheet">
+    <style>
+        body { margin: 0; }
+        #back { display: block; width: 60%; height: auto; margin: auto; }
+        .flower { position: absolute; left: 0; top: 0; }
+        #dd { position: absolute;font-size: 2rem; font-family: 'Pretendard'; font-weight: 700; right: 300px; top: 600px}
+        #timer { font-size: 2rem; font-family: 'Pretendard'; font-weight: 700; position: absolute; top: 600px; left:300px; }
+        #willy { position: absolute;width: 5%;height: auto; right: 200px; top: 500px; }
+    </style>
+</head>
+<body>
+    <div id="dd"></div>
+    <div id="timer">2:00</div>
+    <img id="willy" src="Group 8.png">
+    <img id="back" src="back1.jpg">
+    <script type="text/javascript">
+        let a = ["boy", "girl", "girl4"];
+        let boyImages = document.getElementsByClassName("flower boy"); // boy 이미지를 선택하기 위한 요소
+
+        for (let i = 0; i < 100; i++) {
+            let t = document.createElement("img");
+            let randomIndex = randomBH(0, 2);
+            t.src = a[randomIndex] + ".png";
+            t.className = "flower " + a[randomIndex]; // class에 이미지 종류 추가
+            t.style.width = randomBH(20, 30) + "px";
+            t.style.left = randomBH(300, 1200) + "px";
+            t.style.top = randomBH(50, 500) + "px";
+            t.id = "boyImage" + i; // 고유한 ID 부여
+
+            // boy 이미지에만 클릭 이벤트 핸들러 추가
+            if (a[randomIndex] === "boy") {
+                t.onclick = function () {
+                    this.parentNode.removeChild(this);
+                    updateCount(); // 이미지가 삭제될 때마다 개수 업데이트
+                    if (boyImages.length === 0) {
+                        clearInterval(timerInterval);
+                        alert("깨라고 만든 난이도가 아닌데 용캐 클리어하셨군요! 운이 좋아 랜덤값이 잘 나왔나봐요^^");
+                    }
+                }
+            }
+            document.body.appendChild(t);
+        }
+        dd.innerHTML = "월리를 찾아라 (" + boyImages.length + "명)";
+
+        function updateCount() {
+            boyImages = document.getElementsByClassName("flower boy"); // 업데이트된 이미지 목록을 가져옴
+            dd.innerHTML = "월리를 찾아라 (" + boyImages.length + "명)";
+        }
+
+        function randomBH(min, max) {
+            min = Math.ceil(min);
+            max = Math.floor(max);
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        // 2분 타이머 추가
+        let timerInterval;
+        let timerSeconds = 120;
+
+        function startTimer() {
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        function updateTimer() {
+            timerSeconds--;
+            let minutes = Math.floor(timerSeconds / 60);
+            let seconds = timerSeconds % 60;
+            document.getElementById("timer").textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            if (timerSeconds === 70) {
+                document.getElementById("timer").textContent = "01:10";
+            }
+            if (timerSeconds === 60) {
+                document.getElementById("timer").style.color = "red";
+            }
+            if (timerSeconds === 30) {
+                // 30초 남았을 때 메시지
+                showCustomMessage("아직도 다 못 찾으셨나요? 음... 게임에 소질이 없으시군요!");
+            }
+            if (timerSeconds === 10) {
+                // 10초 남았을 때 메시지
+                showCustomMessage("많이 어렵죠? 당연하죠! 사실 깨라고 만든 난이도가 아니거든요^^");
+            }
+            if (timerSeconds === 0) {
+                clearInterval(timerInterval);
+                alert("게임종료!!");
+            }
+        }
+
+        function showCustomMessage(message) {
+            let messageArray = message.split(" ");
+            let currentIndex = 0;
+            let messageInterval = setInterval(function () {
+                if (currentIndex < messageArray.length) {
+                    document.getElementById("timer").textContent += " " + messageArray[currentIndex];
+                    currentIndex++;
+                } else {
+                    clearInterval(messageInterval);
+                }
+            }, 1000);
+        }
+
+        startTimer(); // 타이머 시작
+    </script>
+</body>
+</html>
